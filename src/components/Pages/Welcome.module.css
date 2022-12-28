@@ -1,0 +1,20 @@
+.welcome {
+  margin: auto;
+  border-bottom: 2px solid black;
+}
+.welcome h1 {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: xx-large;
+  margin: 1rem auto;
+  font-weight: bolder;
+  margin-top: 2rem;
+}
+.welcome h4 {
+    text-align: end;
+    margin-top: 2rem;
+    margin-right: 5px;
+    background-color: rgb(235, 194, 207);
+    border-radius: 15px 0 0 15px;
+    font-style: italic;
+}

@@ -5,6 +5,7 @@ import Login from "./components/Login/Login";
 import Welcome from "./components/Pages/Welcome";
 import SignUp from "./components/SignUp/SignUp";
 import AuthContext from "./store/auth-context";
+import Profile from "./components/Pages/Profile";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
@@ -17,6 +18,9 @@ const App = () => {
       {authCtx.isLoggedIn && <Route path="/welcome" exact>
       <Welcome />
       </Route>}
+      {authCtx.isLoggedIn && <Route path="/profile">
+        <Profile />
+        </Route>}
        <Route path="/login">
         <Login />
       </Route>
