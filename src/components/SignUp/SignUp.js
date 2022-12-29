@@ -1,11 +1,11 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef } from "react";
 import classes from './SignUp.module.css';
 import axios from "axios";
 import { NavLink } from "react-router-dom";
-import AuthContext from "../../store/auth-context";
+// import AuthContext from "../../store/auth-context";
 
 const SignUp = () => {
-    const authCtx = useContext(AuthContext);
+    // const authCtx = useContext(AuthContext);
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
     const confirmPasswordInputRef = useRef();
@@ -44,37 +44,37 @@ const SignUp = () => {
                
             }
             setIsLoading(false);
-            let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ';
-            fetch(
-                url ,
-                {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    email: enteredEmail,
-                    password: enteredPassword,
-                    returnSecureToken: true,
-                  }),
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                }
-            ).then((res) => {
-                if(res.ok){
-                    return res.json();
-                }else{
-                    return res.json().then((data) => {
-                        let errorMessage = "SignUp failed !"
-                        throw new Error(errorMessage);
-                    })
-                }
-            }).then((data) => {
-                console.log(data);
-            authCtx.login(data.idToken, data.email);
-            localStorage.setItem("token", data.idToken);
-            localStorage.setItem("email", data.email);
-        }).catch((err) => {
-            alert(err.message);
-        })
+        //     let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ';
+        //     fetch(
+        //         url ,
+        //         {
+        //           method: 'POST',
+        //           body: JSON.stringify({
+        //             email: enteredEmail,
+        //             password: enteredPassword,
+        //             returnSecureToken: true,
+        //           }),
+        //           headers: {
+        //             "Content-Type": "application/json"
+        //           },
+        //         }
+        //     ).then((res) => {
+        //         if(res.ok){
+        //             return res.json();
+        //         }else{
+        //             return res.json().then((data) => {
+        //                 let errorMessage = "SignUp failed !"
+        //                 throw new Error(errorMessage);
+        //             })
+        //         }
+        //     }).then((data) => {
+        //         console.log(data);
+        //     // authCtx.login(data.idToken, data.email);
+        //     // localStorage.setItem("token", data.idToken);
+        //     // localStorage.setItem("email", data.email);
+        // }).catch((err) => {
+        //     alert(err.message);
+        // })
 
         } catch(error){
                 console.log(error);

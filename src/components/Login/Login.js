@@ -1,68 +1,175 @@
-import React, { useContext, useRef, useState } from 'react';
-import AuthContext from '../../store/auth-context';
-import classes from './Login.module.css';
-import { NavLink } from 'react-router-dom';
-
+import React, { useContext, useRef, useState } from "react";
+import AuthContext from "../../store/auth-context";
+import classes from "./Login.module.css";
+// import axios from 'axios';
 
 const Login = () => {
-const authCtx = useContext(AuthContext);
+  const authCtx = useContext(AuthContext);
 
-const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const emailRef = useRef();
-    const passwordRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
-    const switchLoginModeHandler = () => {
-        setIsLogin((prevState) => !prevState);
+  const switchLoginModeHandler = () => {
+    setIsLogin((prevState) => !prevState);
+  };
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    const enteredEmail = emailRef.current.value;
+    const enteredPassword = passwordRef.current.value;
+    // const loginObj = {
+    //   enteredEmail,
+    //   enteredPassword,
+    // };
+    // if (
+    //   enteredEmail.length < 4 ||
+    //   enteredPassword.length < 3 
+    // //   enteredConfirmPassword.length < 3
+    // ) {
+    //   let errorMessage = "Invalid Credentials";
+    //   alert(errorMessage);
+    // }
+    // //  else if (enteredPassword !== enteredConfirmPassword) {
+    // //   let errorMessage = "Password does not match !";
+    // //   alert(errorMessage);
+    // // } 
+    // else {
+    //   setIsLoading(true);
+    //   const response = await axios.post(
+    //     "https://expense-tracker-b43a5-default-rtdb.firebaseio.com/.json",
+    //     loginObj
+    //   );
+
+    //   console.log(response.data);
+    //   console.log("User is Signed Up Successfully !");
+    // }
+    setIsLoading(true);
+    let url;
+    if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ";
+    } else {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ";
     }
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        setIsLoading(false);
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "Authentication Failed !";
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data);
+        authCtx.login(data.idToken, data.email);
+        localStorage.setItem("token", data.idToken);
+        localStorage.setItem("email", data.email);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+  return (
+    <>
+      <section className={classes.login}>
+        <h1>{isLogin ? "Login" : "Sign Up"}</h1>
+        <form onSubmit={submitHandler}>
+          <div className={classes.control}>
+            <label htmlFor="email">Your Email</label>
+            <input id="email" type="email" ref={emailRef} />
+          </div>
+          <div className={classes.control}>
+            <label htmlFor="password">Your Password</label>
+            <input id="password" type="password" ref={passwordRef} />
+          </div>
+          {!isLogin && (
+            <div className={classes.control}>
+              <label htmlFor="confirm-password">Confirm Password</label>
+              <input id="confirm-password" type="password" />
+            </div>
+          )}
+          <div className={classes.actions}>
+            {!isLoading && (
+              <button>{isLogin ? "Login" : "Create Account"}</button>
+            )}
+            {isLoading && <p>Sending Request...</p>}
+            <button
+              type="button"
+              className={classes.toggle}
+              onClick={switchLoginModeHandler}
+            >
+              {isLogin ? "Create New Account" : "Login with existing account"}
+            </button>
+          </div>
+        </form>
+      </section>
+    </>
+  );
+};
+export default Login;
 
-    const loginSubmitHandler = (event) => {
-        event.preventDefault();
+// const loginSubmitHandler = (event) => {
+//     event.preventDefault();
 
-        const userEmail = emailRef.current.value;
-        const userPassword = passwordRef.current.value;
+//     const userEmail = emailRef.current.value;
+//     const userPassword = passwordRef.current.value;
 
-        let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ'
-        
-        fetch(
-            url,
-            {
-                method: 'POST',
-                body: JSON.stringify({
-                    email: userEmail,
-                    password: userPassword,
-                    returnSecureToken: true,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        ).then((res) => {
-            if(res.ok){
-                return res.json();
-            }
-            else{
-                return res.json().then((data) => {
-                    let errorMessage = "Authentication Failed !"
-                    throw new Error(errorMessage);
-                });
-            }
-        }).then((data) => {
-            console.log(data);
-            authCtx.login(data.idToken, data.email);
-            localStorage.setItem("token", data.idToken);
-            localStorage.setItem("email", data.email);
-            console.log('Login Successful!');
-        }).catch((err) => {
-            alert(err.message);
-        })
-    }
-    
-    return(
-        <>
-        <section className={classes.login}>
+//     const url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ'
+
+//     fetch(
+//         url,
+//         {
+//             method: 'POST',
+//             body: JSON.stringify({
+//                 email: userEmail,
+//                 password: userPassword,
+//                 returnSecureToken: true,
+//             }),
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//         }
+//     ).then((res) => {
+//         if(res.ok){
+//             return res.json();
+//         }
+//         else{
+//             return res.json().then((data) => {
+//                 let errorMessage = "Authentication Failed !"
+//                 throw new Error(errorMessage);
+//             });
+//         }
+//     }).then((data) => {
+//         console.log(data);
+//         authCtx.login(data.idToken, data.email);
+//         localStorage.setItem("token", data.idToken);
+//         localStorage.setItem("email", data.email);
+//         console.log('Login Successful!');
+//     }).catch((err) => {
+//         alert(err.message);
+//     })
+// }
+/* <section className={classes.login}>
             <h1>Login</h1>
-            <form onSubmit={loginSubmitHandler}>
+            <form onSubmit={submitHandler}>
                 <div className={classes.control}>
                     <label htmlFor="email">Email</label>
                     <input id="email" type="email" ref={emailRef} />
@@ -83,10 +190,4 @@ const [isLogin, setIsLogin] = useState(true);
                     </NavLink>
                 </div>
             </form>
-        </section>
-        </>
-    )
-}
-export default Login;
-
-
+        </section> */

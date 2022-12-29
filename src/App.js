@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { Switch } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import { Route } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Welcome from "./components/Pages/Welcome";
-import SignUp from "./components/SignUp/SignUp";
 import AuthContext from "./store/auth-context";
 import Profile from "./components/Pages/Profile";
 
@@ -12,21 +11,22 @@ const App = () => {
   return(
     <React.Fragment>
       <Switch>
-      <Route path="/" exact>
-        <SignUp />
-      </Route>
-      {authCtx.isLoggedIn && <Route path="/welcome" exact>
+      {!authCtx.isLoggedIn && <Route path="/" exact>
+        <Login />
+      </Route>}
+      {authCtx.isLoggedIn && <Route path="/" exact>
       <Welcome />
       </Route>}
-      {authCtx.isLoggedIn && <Route path="/profile">
-        <Profile />
-        </Route>}
-       <Route path="/login">
+      {!authCtx.isLoggedIn && <Route path="/login">
         <Login />
-      </Route>
-      <Route path="/signup">
-    <SignUp />
-    </Route>
+      </Route>}
+      {authCtx.isLoggedIn && <Route path="/login">
+        <Welcome />
+        </Route>}
+     <Route path="/profile">
+        {authCtx.isLoggedIn && <Profile />}
+        {!authCtx.isLoggedIn && <Redirect to="/login" />}
+        </Route>
     </Switch>
     </React.Fragment>
   ) 
