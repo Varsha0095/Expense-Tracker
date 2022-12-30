@@ -3,12 +3,15 @@ import { Col, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import classes from "./Profile.module.css";
 import AuthContext from "../../store/auth-context";
+import axios from "axios";
 
 const Profile = () => {
   const authCtx = useContext(AuthContext);
 
   const fullnameInputRef = useRef();
   const photoInputRef = useRef();
+      
+      const updateProfileUrl = "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ";
 
   const profileUpdateHandler = (event) => {
     event.preventDefault();
@@ -16,39 +19,31 @@ const Profile = () => {
     const enteredFullname = fullnameInputRef.current.value;
     const enteredPhotoUrl = photoInputRef.current.value;
 
-    fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ",
-      {
-        method: "POST",
-        body: JSON.stringify({
+    axios
+    .post(updateProfileUrl, {
           idToken: authCtx.token,
           displayName: enteredFullname,
           photoUrl: enteredPhotoUrl,
-          returnSecureToken: false,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+          returnSecureToken: true,
+        })
       .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage = "Updation Failed!";
-            throw new Error(errorMessage);
-          });
-        }
-      })
-      .then((data) => {
-        console.log(data);
+        console.log(res.data);
         alert("Profile Updated");
       })
       .catch((error) => {
         alert(error.message);
       });
   };
+
+    axios.post('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ',{
+    idToken: authCtx.token
+  })
+  .then((res) => {
+     console.log(res);
+     const user = res.data.users[0]
+     fullnameInputRef.current.value = user.displayName;
+     photoInputRef.current.value = user.photoUrl;
+  })
 
   return (
     <>

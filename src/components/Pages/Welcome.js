@@ -11,6 +11,34 @@ const Welcome = () => {
         authCtx.logout();
     }
 
+    const verifyEmailHandler = () => {
+        fetch(
+            'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ',
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    idToken: authCtx.token,
+                    requestType: "VERIFY_EMAIL",
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((res) => {
+                if(res.ok){
+                    return res.json();
+                }else{
+                        return res.json().then((data) => {
+                        let errorMessage = 'verfication failed'
+                        throw new Error(errorMessage);
+                    })
+                }
+            }).then((data) => {
+                console.log(data);
+            }).catch((err) => {
+                console.log(err.message);
+            })
+    }
+
   return (
     <React.Fragment>
       <NavLink to="/welcome" />
@@ -22,6 +50,7 @@ const Welcome = () => {
           </Row>
         </section>
       {authCtx.isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
+      <button onClick={verifyEmailHandler}>Email ID</button>
     </React.Fragment>
   );
 };

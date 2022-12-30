@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import AuthContext from "../../store/auth-context";
 import classes from "./Login.module.css";
-// import axios from 'axios';
+import axios from "axios";
 
 const Login = () => {
   const authCtx = useContext(AuthContext);
@@ -15,7 +15,7 @@ const Login = () => {
   const switchLoginModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
-  const submitHandler = async (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
 
     const enteredEmail = emailRef.current.value;
@@ -26,7 +26,7 @@ const Login = () => {
     // };
     // if (
     //   enteredEmail.length < 4 ||
-    //   enteredPassword.length < 3 
+    //   enteredPassword.length < 3
     // //   enteredConfirmPassword.length < 3
     // ) {
     //   let errorMessage = "Invalid Credentials";
@@ -35,7 +35,7 @@ const Login = () => {
     // //  else if (enteredPassword !== enteredConfirmPassword) {
     // //   let errorMessage = "Password does not match !";
     // //   alert(errorMessage);
-    // // } 
+    // // }
     // else {
     //   setIsLoading(true);
     //   const response = await axios.post(
@@ -55,37 +55,45 @@ const Login = () => {
       url =
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSVbdJioXJIrQNGGXzqqS2drVffVyOMmQ";
     }
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-        returnSecureToken: true,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        setIsLoading(false);
-        if (res.ok) {
-          return res.json();
-        } else {
-          return res.json().then((data) => {
-            let errorMessage = "Authentication Failed !";
-            throw new Error(errorMessage);
-          });
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        authCtx.login(data.idToken, data.email);
-        localStorage.setItem("token", data.idToken);
-        localStorage.setItem("email", data.email);
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
+
+     axios
+        .post(url, {
+            idToken: authCtx.token,
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+        }).then((res) => {
+            console.log(res.data);
+            setIsLoading(false);
+            authCtx.login(res.data.idToken, res.data.email);
+            localStorage.setItem("token", res.data.idToken);
+            localStorage.setItem("email", res.data.email);
+            
+            let mail = res.data.email.replace('@', '').replace('.','');
+
+            axios.post(`https://expense-tracker-b43a5-default-rtdb.firebaseio.com/${mail}.json`,{
+                idToken: authCtx.token,
+                email: enteredEmail,
+                password: enteredPassword
+            }).then((response) => {
+                console.log(response.data);
+            })
+            
+        }).catch((err) => {
+            console.log(err.message);
+        })
+
+    
+    
+    //   .then((data) => {
+    //     console.log(data);
+    //     authCtx.login(data.idToken, data.email);
+    //     localStorage.setItem("token", data.idToken);
+    //     localStorage.setItem("email", data.email);
+    //   })
+    //   .catch((err) => {
+    //     alert(err.message);
+    //   });
   };
   return (
     <>
