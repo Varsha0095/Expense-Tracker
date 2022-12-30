@@ -2,6 +2,7 @@ import React, { useContext, useRef, useState } from "react";
 import AuthContext from "../../store/auth-context";
 import classes from "./Login.module.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const authCtx = useContext(AuthContext);
@@ -82,18 +83,6 @@ const Login = () => {
         }).catch((err) => {
             console.log(err.message);
         })
-
-    
-    
-    //   .then((data) => {
-    //     console.log(data);
-    //     authCtx.login(data.idToken, data.email);
-    //     localStorage.setItem("token", data.idToken);
-    //     localStorage.setItem("email", data.email);
-    //   })
-    //   .catch((err) => {
-    //     alert(err.message);
-    //   });
   };
   return (
     <>
@@ -116,8 +105,11 @@ const Login = () => {
           )}
           <div className={classes.actions}>
             {!isLoading && (
-              <button>{isLogin ? "Login" : "Create Account"}</button>
-            )}
+              <button>{isLogin ? "Login" : "Create Account"}</button>)}
+              {!isLoading && (
+                <Link to="/forgotpassword">{isLogin ? "Forgot Password ?" : ""}</Link>
+              )}
+            
             {isLoading && <p>Sending Request...</p>}
             <button
               type="button"

@@ -50,7 +50,9 @@ const Welcome = () => {
           </Row>
         </section>
       {authCtx.isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
-      <button onClick={verifyEmailHandler}>Email ID</button>
+      <div>
+      <button onClick={verifyEmailHandler}>Verify Email</button>
+      </div>
     </React.Fragment>
   );
 };

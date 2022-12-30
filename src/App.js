@@ -5,6 +5,7 @@ import Login from "./components/Login/Login";
 import Welcome from "./components/Pages/Welcome";
 import AuthContext from "./store/auth-context";
 import Profile from "./components/Pages/Profile";
+import ForgotPassword from "./components/Pages/ForgotPassword";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
@@ -26,6 +27,9 @@ const App = () => {
      <Route path="/profile">
         {authCtx.isLoggedIn && <Profile />}
         {!authCtx.isLoggedIn && <Redirect to="/login" />}
+        </Route>
+        <Route path="/forgotpassword">
+          <ForgotPassword />
         </Route>
     </Switch>
     </React.Fragment>
