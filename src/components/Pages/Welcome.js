@@ -3,6 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import classes from "./Welcome.module.css";
+import ExpenseForm from "../Expenses/ExpenseForm";
 
 const Welcome = () => {
     const authCtx = useContext(AuthContext);
@@ -49,9 +50,10 @@ const Welcome = () => {
             <Link to="/profile" style={{textDecoration: "none"}}>Complete Now</Link></h4></Col>
           </Row>
         </section>
-      {authCtx.isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
+        <ExpenseForm />
+      {authCtx.isLoggedIn && <button className={classes.button1} onClick={logoutHandler}>Logout</button>}
       <div>
-      <button onClick={verifyEmailHandler}>Verify Email</button>
+      <button className={classes.button2} onClick={verifyEmailHandler}>Verify Email</button>
       </div>
     </React.Fragment>
   );
