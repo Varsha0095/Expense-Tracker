@@ -83,7 +83,7 @@ const ExpenseForm = (props) => {
                 <Col>Expense Category</Col>
             </Row>
             <Col>{expenses.length > 0 && <ExpenseItem expenses={expenses} />}</Col>
-            <Col>{expenses.length < 1 && <div>No expenses are added yet</div>}</Col>
+            <Col>{expenses.length < 1 && <div>No expenses are added Yet !!</div>}</Col>
          </Container>
         </section>
     )
