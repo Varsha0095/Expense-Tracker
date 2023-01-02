@@ -3,11 +3,6 @@ import { Row, Col } from "react-bootstrap";
 const ExpenseItem = ({expenses}) => {
     return expenses.map((expense) => (
         <>
-        <Row style={{textDecoration:'underline'}}>
-            <Col>Expense Amount</Col>
-            <Col>Expense Description</Col>
-            <Col>Expense Category</Col>
-        </Row>
         <Row>
             <Col>Rs.{expense.enteredAmount}</Col>
             <Col>{expense.enteredDescription}</Col>

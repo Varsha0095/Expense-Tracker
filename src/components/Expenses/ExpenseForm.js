@@ -1,8 +1,8 @@
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import classes from './ExpenseForm.module.css';
 import ExpenseItem from "./ExpenseItem";
-import ExpenseList from "./ExpenseList";
 
 const fetchingDatafromLocalStorage = () => {
     const data = localStorage.getItem('expenses');
@@ -32,12 +32,23 @@ const ExpenseForm = (props) => {
             enteredCategory
         }
         setExpenses([...expenses, expenseObj]);
-        // localStorage.setItem(expenseObj.enteredDescription, JSON.stringify(expenseObj));
-        // let expense_deserialized = JSON.parse(localStorage.getItem(expenseObj.enteredDescription));
-        // console.log(expense_deserialized);
+        
+         axios.post('https://expense-tracker-b43a5-default-rtdb.firebaseio.com/.json', {
+            expenses
+        }).then((res) => {
+            console.log(res);
+         }).catch((err) => {
+            console.log(err.message);
+         })
+        
     };
     useEffect(() => {
         localStorage.setItem('expenses', JSON.stringify(expenses))
+        axios.get('https://expense-tracker-b43a5-default-rtdb.firebaseio.com/.json',{
+            expenses
+        }).then((res) => {
+            console.log('Fetched Data', res.data);
+        })
     },[expenses])
 
 
@@ -66,8 +77,13 @@ const ExpenseForm = (props) => {
             </div>
           </form>
          <Container className={classes.container}>
-            {expenses.length > 0 && <ExpenseItem expenses={expenses} />}
-            {expenses.length < 1 && <ExpenseList />}
+            <Row style={{textDecoration: "underline"}}>
+                <Col>Expense Amount</Col>
+                <Col>Expense Description</Col>
+                <Col>Expense Category</Col>
+            </Row>
+            <Col>{expenses.length > 0 && <ExpenseItem expenses={expenses} />}</Col>
+            <Col>{expenses.length < 1 && <div>No expenses are added yet</div>}</Col>
          </Container>
         </section>
     )
