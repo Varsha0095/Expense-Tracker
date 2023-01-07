@@ -72,7 +72,7 @@ const Login = () => {
             
             let mail = res.data.email.replace('@', '').replace('.','');
 
-            axios.post(`https://expense-tracker-b43a5-default-rtdb.firebaseio.com/${mail}.json`,{
+            axios.post(`https://expense-tracker-b43a5-default-rtdb.firebaseio.com/userData/${mail}.json`,{
                 idToken: authCtx.token,
                 email: enteredEmail,
                 password: enteredPassword
